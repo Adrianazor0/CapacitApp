@@ -26,7 +26,7 @@ Plataforma integral para la gestión académica y financiera de centros de capac
 
 1. **Clonar el repositorio:**
    \`\`\`bash
-   git clone <TU_URL_DEL_REPO>
+   git clone <https://github.com/Adrianazor0/CapacitApp>
    \`\`\`
 
 2. **Configurar Backend:**

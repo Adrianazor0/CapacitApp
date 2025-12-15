@@ -1,0 +1,48 @@
+name: Deploy Backend to Cloud Run
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'server/**' # Solo se ejecuta si cambiaste algo en el backend
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    
+    # IMPORTANTE: Permisos necesarios para autenticación de Google
+    permissions:
+      contents: 'read'
+      id-token: 'write'
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      # 1. Autenticación con Google Cloud
+      - name: Google Auth
+        id: auth
+        uses: google-github-actions/auth@v2
+        with:
+          credentials_json: '${{ secrets.GCP_CREDENTIALS }}'
+
+      # 2. Configurar Cloud SDK
+      - name: Set up Cloud SDK
+        uses: google-github-actions/setup-gcloud@v2
+
+      # 3. Desplegar a Cloud Run (Construye la imagen automáticamente)
+      - name: Deploy to Cloud Run
+        id: deploy
+        uses: google-github-actions/deploy-cloudrun@v2
+        with:
+          service: gestion-api  # NOMBRE EXACTO DE TU SERVICIO EN CLOUD RUN
+          source: ./server      # Carpeta donde está el Dockerfile
+          region: us-central1   # TU REGIÓN (ej: us-central1)
+          env_vars: |
+            NODE_ENV=production
+            # Las otras variables (MONGO_URI, JWT_SECRET) ya están guardadas en Cloud Run, 
+            # no hace falta ponerlas aquí a menos que quieras sobreescribirlas.
+
+      - name: Show Output
+        run: echo ${{ steps.deploy.outputs.url }}

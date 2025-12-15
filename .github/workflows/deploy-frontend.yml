@@ -1,0 +1,41 @@
+name: Deploy Frontend to Firebase
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'client/**' # Solo si cambias el frontend
+
+jobs:
+  build_and_deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Install Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      # Instalar y Construir
+      - name: Install Dependencies & Build
+        working-directory: ./client
+        run: |
+          npm ci
+          npm run build
+        env:
+          # Inyectamos la URL del backend al momento de construir
+          # (Asegúrate de cambiar esto por TU URL REAL de Cloud Run)
+          VITE_API_URL: [https://gestion-api-xyz.a.run.app/api](https://gestion-api-xyz.a.run.app/api) 
+
+      # Desplegar a Firebase
+      - name: Deploy to Firebase Hosting
+        uses: FirebaseExtended/action-hosting-deploy@v0
+        with:
+          repoToken: '${{ secrets.GITHUB_TOKEN }}'
+          firebaseServiceAccount: '${{ secrets.GCP_CREDENTIALS }}' # Reusamos el JSON de GCP
+          channelId: live
+          projectId: ${{ secrets.GCP_PROJECT_ID }}

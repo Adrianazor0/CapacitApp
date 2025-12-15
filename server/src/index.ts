@@ -15,7 +15,7 @@ import reportRoutes from './routes/report.routes';
 
 dotenv.config();
 const app: Application = expres();
-const PORT = process.env.PORT || 4000;
+const PORT = Number(process.env.PORT) || 4000;
 
 connectDB();
 

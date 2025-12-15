@@ -28,7 +28,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     const [loading, setLoading] = useState(true);
 
     const signin = async (user: LoginRequest) => {
-        setLoading(true); 
+        setLoading(true);
         try {
             const res = await loginRequest(user);
             setUser(res.data);
@@ -58,18 +58,18 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
             const storedUser = localStorage.getItem("user")
 
             if (!token || !storedUser) {
-                setUser(null);
                 setIsAuthenticated(false);
+                setLoading(false);
                 return;
             }
 
             try {
-                setUser(JSON.parse(storedUser))
-                setIsAuthenticated(true)
+                setUser(JSON.parse(storedUser));
+                setIsAuthenticated(true);
             } catch (error) {
-                setIsAuthenticated(false)
+                setIsAuthenticated(false);
             } finally {
-                setLoading(false)
+                setLoading(false); 
             }
         };
         checkLogin();

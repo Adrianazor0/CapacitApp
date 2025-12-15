@@ -20,3 +20,18 @@ export const createClassroom = async (req: Request, res: Response): Promise<void
         res.status(400).json({ message: (error as Error).message });
     }
 };
+
+export const updateClassroom = async (req: Request, res: Response): Promise<void> => {
+    try {
+        const { id } = req.params;
+        const classroomData: Partial<IClassroom> = req.body;
+        const updatedClassroom: IClassroom | null = await Classroom.findByIdAndUpdate(id, classroomData, { new: true });
+        if (!updatedClassroom) {
+            res.status(404).json({ message: "Aula no encontrada" });
+            return;
+        }
+        res.status(200).json(updatedClassroom);
+    } catch (error) {
+        res.status(400).json({ message: (error as Error).message });
+    }
+};

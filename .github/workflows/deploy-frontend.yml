@@ -38,4 +38,5 @@ jobs:
           firebaseServiceAccount: '${{ secrets.GCP_CREDENTIALS }}' # Reusamos el JSON de GCP
           channelId: live
           projectId: ${{ secrets.GCP_PROJECT_ID }}
+          entryPoint: ./client
 

@@ -1,4 +1,3 @@
-import { Program } from '../../../server/src/models/Program';
 export interface User {
     _id: string;
     username: string;

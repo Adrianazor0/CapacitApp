@@ -5,7 +5,7 @@ on:
     branches:
       - main
     paths:
-      - 'server/**' # Solo se ejecuta si cambiaste algo en el backend
+      - 'server/**' 
 
 jobs:
   deploy:
@@ -36,13 +36,11 @@ jobs:
         id: deploy
         uses: google-github-actions/deploy-cloudrun@v2
         with:
-          service: gestion-api  # NOMBRE EXACTO DE TU SERVICIO EN CLOUD RUN
+          service: capacit-api  # NOMBRE EXACTO DE TU SERVICIO EN CLOUD RUN
           source: ./server      # Carpeta donde está el Dockerfile
           region: us-central1   # TU REGIÓN (ej: us-central1)
           env_vars: |
             NODE_ENV=production
-            # Las otras variables (MONGO_URI, JWT_SECRET) ya están guardadas en Cloud Run, 
-            # no hace falta ponerlas aquí a menos que quieras sobreescribirlas.
 
       - name: Show Output
         run: echo ${{ steps.deploy.outputs.url }}

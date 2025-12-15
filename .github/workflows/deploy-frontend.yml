@@ -5,7 +5,7 @@ on:
     branches:
       - main
     paths:
-      - 'client/**' # Solo si cambias el frontend
+      - 'client/**' 
 
 jobs:
   build_and_deploy:
@@ -20,7 +20,6 @@ jobs:
         with:
           node-version: 20
 
-      # Instalar y Construir
       - name: Install Dependencies & Build
         working-directory: ./client
         run: |
@@ -29,7 +28,7 @@ jobs:
         env:
           # Inyectamos la URL del backend al momento de construir
           # (Asegúrate de cambiar esto por TU URL REAL de Cloud Run)
-          VITE_API_URL: [https://gestion-api-xyz.a.run.app/api](https://gestion-api-xyz.a.run.app/api) 
+          VITE_API_URL: https://capacit-api-659856069762.us-central1.run.app/api
 
       # Desplegar a Firebase
       - name: Deploy to Firebase Hosting
@@ -39,3 +38,4 @@ jobs:
           firebaseServiceAccount: '${{ secrets.GCP_CREDENTIALS }}' # Reusamos el JSON de GCP
           channelId: live
           projectId: ${{ secrets.GCP_PROJECT_ID }}
+

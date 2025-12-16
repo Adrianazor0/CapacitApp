@@ -21,3 +21,9 @@ export interface DashboardStats {
 
 export const getDashboardStatsRequest = async () => 
   client.get<DashboardStats>('/reports/dashboard');
+
+export const getPaymentsReportRequest = async (startDate: string, endDate: string) => 
+  client.get(`/reports/payments?startDate=${startDate}&endDate=${endDate}`);
+
+export const getDebtorsReportRequest = async () => 
+  client.get('/reports/debtors');

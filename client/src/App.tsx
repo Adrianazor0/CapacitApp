@@ -10,6 +10,7 @@ import { StudentsPage } from "./pages/StudentsPage";
 import { ClassroomsPage } from "./pages/ClassroomsPage";
 import { GroupDetailsPage } from './pages/GroupDetailsPage';
 import { DashboardPage } from './pages/DashboardPage';
+import { ReportsPage } from './pages/ReportsPage';
 
 function App() {
   return (
@@ -26,6 +27,7 @@ function App() {
             <Route path="/groups" element={<GroupsPage />} />
             <Route path="/finances/groups/:id" element={<GroupDetailsPage />} />
             <Route path="/" element={<DashboardPage />} />
+            <Route path="/reports" element={<ReportsPage />} />
           </Route>
         </Route>
 

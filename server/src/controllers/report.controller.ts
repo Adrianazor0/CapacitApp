@@ -67,3 +67,96 @@ export const getDashboardStats = async (req: Request, res: Response) => {
     res.status(500).json({ message: (error as Error).message });
   }
 };
+
+export const getPaymentsReport = async (req: Request, res: Response) => {
+  try {
+    const { startDate, endDate } = req.query;
+
+    // Filtro de fechas (si no vienen, tomamos el último mes)
+    const start = startDate ? new Date(String(startDate)) : new Date(new Date().setDate(new Date().getDate() - 30));
+    const end = endDate ? new Date(String(endDate)) : new Date();
+    // Ajustar end al final del día
+    end.setHours(23, 59, 59, 999);
+
+    const payments = await Payment.find({
+      date: { $gte: start, $lte: end }
+    })
+    .populate({
+      path: 'enrollment',
+      populate: [
+        { path: 'student', select: 'name lastName documentId' },
+        { 
+          path: 'group', 
+          select: 'code',
+          populate: { path: 'program', select: 'name' } 
+        }
+      ]
+    })
+    .sort({ date: -1 });
+
+    res.json(payments);
+  } catch (error) {
+    res.status(500).json({ message: (error as Error).message });
+  }
+};
+
+export const getDebtorsReport = async (req: Request, res: Response) => {
+  try {
+    const debtors = await Enrollment.aggregate([
+      {
+        $lookup: {
+          from: 'groups',
+          localField: 'group',
+          foreignField: '_id',
+          as: 'groupInfo'
+        }
+      },
+      { $unwind: '$groupInfo' },
+      {
+        $lookup: {
+          from: 'programs',
+          localField: 'groupInfo.program',
+          foreignField: '_id',
+          as: 'programInfo'
+        }
+      },
+      { $unwind: '$programInfo' },
+      
+      {
+        $lookup: {
+          from: 'students',
+          localField: 'student',
+          foreignField: '_id',
+          as: 'studentInfo'
+        }
+      },
+      { $unwind: '$studentInfo' },
+
+      {
+        $addFields: {
+          debt: { $subtract: ['$programInfo.cost', '$totalPaid'] }
+        }
+      },
+
+      { $match: { debt: { $gt: 0 } } },
+
+      {
+        $project: {
+          studentName: { $concat: ['$studentInfo.name', ' ', '$studentInfo.lastName'] },
+          studentEmail: '$studentInfo.email',
+          studentPhone: '$studentInfo.phone',
+          groupCode: '$groupInfo.code',
+          programName: '$programInfo.name',
+          totalPaid: 1,
+          cost: '$programInfo.cost',
+          debt: 1
+        }
+      }
+    ]);
+
+    res.json(debtors);
+  } catch (error) {
+    res.status(500).json({ message: (error as Error).message });
+  }
+};
+

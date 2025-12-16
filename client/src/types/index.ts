@@ -9,13 +9,15 @@ export interface AuthResponse extends User {
 }
 
 export interface Program {
-    _id: string;
-    name: string;
-    type: "Curso" | "Diplomado" | "Taller" | "Seminario";
-    cost: number;
-    paymentType: "unico" | "cuotas";
-    description?: string;
-    isActive: boolean;
+  _id: string;
+  code: string; // Nuevo
+  name: string;
+  type: 'Curso' | 'Diplomado' | 'Taller' | 'Seminario';
+  level: 'Básico' | 'Intermedio' | 'Avanzado'; // Nuevo
+  cost: number;
+  paymentType: 'unico' | 'cuotas';
+  description?: string;
+  isActive: boolean;
 }
 
 export interface Teacher {

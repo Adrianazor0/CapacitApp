@@ -44,8 +44,16 @@ export interface Student {
   email: string;
   documentId: string;
   phone?: string;
+  birthDate?: string; // Recibimos string ISO desde la API
+  gender?: 'M' | 'F' | 'Otro';
+  address?: string;
+  emergencyContact?: {
+    name: string;
+    phone: string;
+  };
   isActive: boolean;
 }
+
 
 export interface Group {
   _id: string;

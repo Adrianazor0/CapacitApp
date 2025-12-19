@@ -11,6 +11,7 @@ import { ClassroomsPage } from "./pages/ClassroomsPage";
 import { GroupDetailsPage } from './pages/GroupDetailsPage';
 import { DashboardPage } from './pages/DashboardPage';
 import { ReportsPage } from './pages/ReportsPage';
+import { FinancePage } from './pages/FinancePage';
 
 function App() {
   return (
@@ -25,9 +26,10 @@ function App() {
             <Route path="/classrooms" element={<ClassroomsPage />} />
             <Route path="/students" element={<StudentsPage />} />
             <Route path="/groups" element={<GroupsPage />} />
-            <Route path="/finances/groups/:id" element={<GroupDetailsPage />} />
+            <Route path="/groups/:id" element={<GroupDetailsPage />} />
             <Route path="/" element={<DashboardPage />} />
             <Route path="/reports" element={<ReportsPage />} />
+            <Route path="/finances" element={<FinancePage />} />
           </Route>
         </Route>
 

@@ -12,6 +12,8 @@ import classroomRoutes from './routes/classroom.routes';
 import authRoutes from './routes/auth.routes';
 import financeRoutes from './routes/finance.routes'; 
 import reportRoutes from './routes/report.routes';
+import academicRoutes from './routes/academic.routes';
+
 
 dotenv.config();
 const app: Application = expres();
@@ -35,7 +37,8 @@ app.use('/api/groups', groupRoutes);
 app.use('/api/teachers', teacherRoutes);
 app.use('/api/classrooms', classroomRoutes);
 app.use('/api/finances', financeRoutes);
-app.use('/api/reports', reportRoutes); // Agrega esta línea
+app.use('/api/reports', reportRoutes);
+app.use('/api/academic', academicRoutes);
 
 app.listen(PORT, () => {
     console.log(`Server is running on port ${PORT}`);

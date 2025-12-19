@@ -7,6 +7,7 @@ export interface IEnrollment extends Document {
     grades: { note: string, value: number }[];
     finalGrade?: number;
     totalPaid: number;
+    attendance: { date: Date; status: 'P' | 'A' | 'J' }[];
 }
 
 const EnrollmentSchema: Schema = new Schema({
@@ -18,7 +19,11 @@ const EnrollmentSchema: Schema = new Schema({
         default: "Inscrito" },
     grades: [{ note: String, value: Number }],
     finalGrade: Number,
-    totalPaid: { type: Number, default: 0 }
+    totalPaid: { type: Number, default: 0 },
+    attendance: [{
+    date: { type: Date, default: Date.now },
+    status: { type: String, enum: ['P', 'A', 'J'], default: 'P' }
+  }]
 }, {
     timestamps: true,
 });

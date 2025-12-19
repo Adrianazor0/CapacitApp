@@ -142,6 +142,7 @@ export const getDebtorsReport = async (req: Request, res: Response) => {
 
       {
         $project: {
+          enrollmentId: '$_id',
           studentName: { $concat: ['$studentInfo.name', ' ', '$studentInfo.lastName'] },
           studentEmail: '$studentInfo.email',
           studentPhone: '$studentInfo.phone',

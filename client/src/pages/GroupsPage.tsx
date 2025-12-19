@@ -91,7 +91,7 @@ export const GroupsPage = () => {
             </div>
             <div className="mt-4 pt-4 border-t flex justify-end">
               <Link 
-                to={`/finances/groups/${g._id}`}
+                to={`/groups/${g._id}`}
                 className="text-indigo-600 font-bold text-sm hover:underline"
               >
                 Gestionar Grupo →

@@ -24,8 +24,13 @@ export interface Teacher {
   _id: string;
   name: string;
   lastName: string;
+  documentId: string;
   email: string;
+  phone?: string;
   speciality: string;
+  degree?: string;
+  address?: string;
+  hireDate?: string;
   isActive: boolean;
 }
 

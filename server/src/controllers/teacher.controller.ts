@@ -20,3 +20,30 @@ export const createTeacher = async (req: Request, res: Response): Promise<void> 
         res.status(400).json({ message: (error as Error).message });
     }
 };
+
+export const updateTeacher = async (req: Request, res: Response) => {
+  try {
+    const { id } = req.params;
+    const updated = await Teacher.findByIdAndUpdate(id, req.body, { new: true });
+    if (!updated) return res.status(404).json({ message: "Profesor no encontrado" });
+    res.json(updated);
+  } catch (error) {
+    res.status(400).json({ message: (error as Error).message });
+  }
+};
+
+// Desactivar (Soft Delete)
+export const deleteTeacher = async (req: Request, res: Response) => {
+  try {
+    const { id } = req.params;
+    const teacher = await Teacher.findById(id);
+    if (!teacher) return res.status(404).json({ message: "Profesor no encontrado" });
+
+    teacher.isActive = !teacher.isActive;
+    await teacher.save();
+    
+    res.json({ message: `Profesor ${teacher.isActive ? 'activado' : 'desactivado'} correctamente` });
+  } catch (error) {
+    res.status(500).json({ message: (error as Error).message });
+  }
+};

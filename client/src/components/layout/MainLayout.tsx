@@ -14,11 +14,11 @@ export const MainLayout = () => {
         isOpen={isSidebarOpen} 
         onClose={() => setIsSidebarOpen(false)} 
       />
-      
-      <div className="flex-1 flex flex-col w-full min-w-0 "> {/* min-w-0 evita desbordes en flex */}
+
+      <div className="flex-1 flex flex-col w-screen md:w-full min-w-0">
         
         {/* 2. Header Móvil (Solo visible en pantallas pequeñas) */}
-        <header className="bg-white border-b p-4 flex items-center justify-between md:hidden sticky top-0 z-30 shadow-sm w-sc">
+        <header className="bg-white border-b p-4 flex items-center justify-between md:hidden sticky top-0 z-30 shadow-sm">
           <div className="flex items-center gap-3">
              <div className="bg-indigo-600 p-1.5 rounded text-white">
                 <GraduationCap size={20} />
@@ -34,7 +34,7 @@ export const MainLayout = () => {
         </header>
 
         {/* 3. Contenido Principal */}
-        <main className="flex-1 p-4 md:p-8 overflow-x-hidden">
+        <main className="flex-1 p-4 md:p-8 w-full overflow-x-hidden">
           <Outlet />
         </main>
       </div>

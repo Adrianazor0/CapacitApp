@@ -63,3 +63,21 @@ export const addGrade = async (req: Request, res: Response) => {
     res.status(400).json({ message: (error as Error).message });
   }
 };
+
+export const getRecentTransactions = async (req: Request, res: Response) => {
+  try {
+    const payments = await Payment.find()
+      .sort({ date: -1 })
+      .limit(10)
+      .populate({
+        path: 'enrollment',
+        populate: [
+          { path: 'student', select: 'name lastName' },
+          { path: 'group', select: 'code', populate: { path: 'program', select: 'name' } }
+        ]
+      });
+    res.json(payments);
+  } catch (error) {
+    res.status(500).json({ message: (error as Error).message });
+  }
+};

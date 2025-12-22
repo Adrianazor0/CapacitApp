@@ -37,8 +37,12 @@ export interface Teacher {
 export interface Classroom {
   _id: string;
   name: string;
+  type: 'Física' | 'Virtual';
   capacity: number;
-  location: string;
+  location?: string;
+  resources?: string[];
+  platform?: string;
+  meetingLink?: string;
   isActive: boolean;
 }
 

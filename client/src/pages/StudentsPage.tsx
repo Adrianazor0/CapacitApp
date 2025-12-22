@@ -7,8 +7,8 @@ import {
 import type { Student } from '../types';
 import { Modal } from '../components/ui/Modal';
 import { 
-  Plus, Save, Edit2, 
-  Trash2, RotateCcw, Search, Phone, MapPin 
+  Plus, Save, Edit2, Mail, 
+  Trash2, RotateCcw, Search, Phone, MapPin, User 
 } from 'lucide-react';
 
 export const StudentsPage = () => {
@@ -35,12 +35,12 @@ export const StudentsPage = () => {
 
   useEffect(() => { loadStudents(); }, []);
 
-  // Filtro de búsqueda en tiempo real
   useEffect(() => {
+    const term = searchTerm.toLowerCase();
     const results = students.filter(s => 
-      s.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      s.lastName.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      s.documentId.includes(searchTerm)
+      s.name.toLowerCase().includes(term) ||
+      s.lastName.toLowerCase().includes(term) ||
+      s.documentId.includes(term)
     );
     setFilteredStudents(results);
   }, [searchTerm, students]);
@@ -60,11 +60,9 @@ export const StudentsPage = () => {
     setValue("phone", student.phone);
     setValue("gender", student.gender);
     setValue("address", student.address);
-    // Manejo de fechas: Convertir ISO a YYYY-MM-DD para el input date
     if (student.birthDate) {
         setValue("birthDate", student.birthDate.split('T')[0]);
     }
-    // Datos anidados
     if (student.emergencyContact) {
         setValue("emergencyContact.name", student.emergencyContact.name);
         setValue("emergencyContact.phone", student.emergencyContact.phone);
@@ -101,7 +99,7 @@ export const StudentsPage = () => {
   if (loading) return <div>Cargando directorio...</div>;
 
   return (
-    <div>
+    <div className="max-w-full">
       <div className="flex flex-col md:flex-row justify-between items-center mb-6 gap-4">
         <div>
           <h1 className="text-2xl font-bold text-gray-800">Directorio Estudiantes</h1>
@@ -113,19 +111,20 @@ export const StudentsPage = () => {
                 <Search className="absolute left-3 top-2.5 text-gray-400" size={18} />
                 <input 
                     type="text" 
-                    placeholder="Buscar por nombre o DNI..." 
+                    placeholder="Buscar..." 
                     className="w-full pl-10 pr-4 py-2 border rounded-lg focus:ring-2 focus:ring-indigo-500 outline-none"
                     value={searchTerm}
                     onChange={(e) => setSearchTerm(e.target.value)}
                 />
             </div>
             <button onClick={openCreateModal} className="bg-indigo-600 text-white px-4 py-2 rounded-lg flex items-center gap-2 hover:bg-indigo-700 transition shadow-sm">
-                <Plus size={20} /> Nuevo
+                <Plus size={20} /> <span className="hidden md:inline">Nuevo</span>
             </button>
         </div>
       </div>
 
-      <div className="bg-white rounded-xl shadow-sm border overflow-hidden">
+      {/* --- VISTA ESCRITORIO (TABLA) --- */}
+      <div className="hidden md:block bg-white rounded-xl shadow-sm border overflow-hidden">
         <table className="w-full text-left border-collapse">
           <thead className="bg-gray-50 text-gray-600 text-xs uppercase font-bold">
             <tr>
@@ -143,7 +142,7 @@ export const StudentsPage = () => {
                 <td className="p-4">
                     <div className="font-bold text-gray-800">{s.name} {s.lastName}</div>
                     <div className="text-xs text-gray-500 flex items-center gap-1 mt-1">
-                        {s.gender === 'M' ? 'Masculino' : s.gender === 'F' ? 'Femenino' : ''} 
+                        {s.gender === 'M' ? 'Masc.' : s.gender === 'F' ? 'Fem.' : ''} 
                         {s.birthDate && ` • ${new Date(s.birthDate).toLocaleDateString()}`}
                     </div>
                 </td>
@@ -186,18 +185,81 @@ export const StudentsPage = () => {
                 </td>
               </tr>
             ))}
-            {filteredStudents.length === 0 && (
-                <tr>
-                    <td colSpan={6} className="p-8 text-center text-gray-400">
-                        No se encontraron estudiantes.
-                    </td>
-                </tr>
-            )}
           </tbody>
         </table>
       </div>
 
-      {/* Modal Crear/Editar */}
+      {/* --- VISTA MÓVIL (TARJETAS) --- */}
+      <div className="md:hidden grid grid-cols-1 gap-4">
+        {filteredStudents.map((s) => (
+          <div key={s._id} className={`bg-white p-4 rounded-xl shadow-sm border transition ${!s.isActive ? 'opacity-75 bg-gray-50' : ''}`}>
+            
+            <div className="flex justify-between items-start mb-3">
+               <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 rounded-full bg-blue-100 flex items-center justify-center text-blue-700 font-bold">
+                      <User size={20} />
+                  </div>
+                  <div>
+                      <h3 className="font-bold text-gray-800">{s.name} {s.lastName}</h3>
+                      <p className="text-xs text-gray-500">{s.documentId}</p>
+                  </div>
+               </div>
+               <span className={`px-2 py-0.5 rounded text-[10px] font-bold uppercase ${s.isActive ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-600'}`}>
+                  {s.isActive ? 'Activo' : 'Inactivo'}
+               </span>
+            </div>
+
+            <div className="space-y-2 text-sm text-gray-600 mb-4 border-b pb-3 border-gray-100">
+               <div className="flex items-center gap-2">
+                  <Mail size={16} className="text-blue-400" />
+                  <span className="truncate">{s.email}</span>
+               </div>
+               {s.phone && (
+                 <div className="flex items-center gap-2">
+                    <Phone size={16} className="text-blue-400" />
+                    <span>{s.phone}</span>
+                 </div>
+               )}
+               {s.address && (
+                 <div className="flex items-center gap-2 text-xs">
+                    <MapPin size={16} className="text-blue-400" />
+                    <span className="truncate">{s.address}</span>
+                 </div>
+               )}
+            </div>
+
+            {s.emergencyContact?.name && (
+                <div className="bg-red-50 p-2 rounded text-xs mb-4">
+                    <span className="font-bold text-red-800 block mb-1">Emergencia:</span>
+                    <span className="text-red-700">{s.emergencyContact.name} ({s.emergencyContact.phone})</span>
+                </div>
+            )}
+
+            <div className="flex justify-end gap-2">
+                <button 
+                  onClick={() => openEditModal(s)}
+                  className="flex-1 bg-gray-50 text-gray-700 py-2 rounded-lg text-sm font-medium flex items-center justify-center gap-2 hover:bg-gray-100"
+                >
+                   <Edit2 size={16} /> Editar
+                </button>
+                <button 
+                  onClick={() => handleToggleStatus(s._id)}
+                  className={`flex-1 py-2 rounded-lg text-sm font-medium flex items-center justify-center gap-2 ${s.isActive ? 'bg-red-50 text-red-600 hover:bg-red-100' : 'bg-green-50 text-green-600 hover:bg-green-100'}`}
+                >
+                   {s.isActive ? <><Trash2 size={16} /> Desactivar</> : <><RotateCcw size={16} /> Activar</>}
+                </button>
+            </div>
+          </div>
+        ))}
+      </div>
+
+      {filteredStudents.length === 0 && (
+        <div className="text-center py-10 text-gray-400 bg-white rounded-xl border border-dashed mt-4">
+            No se encontraron estudiantes.
+        </div>
+      )}
+
+      {/* Modal Crear/Editar (Reutilizado) */}
       <Modal 
         isOpen={isModalOpen} 
         onClose={() => setIsModalOpen(false)}

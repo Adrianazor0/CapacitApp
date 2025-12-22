@@ -111,7 +111,7 @@ export const ReportsPage = () => {
             <span className="text-2xl font-bold text-green-700">${totalIngresos.toLocaleString()}</span>
           </div>
 
-          <div className="bg-white rounded-xl shadow-sm border overflow-hidden">
+          <div className="bg-white rounded-xl shadow-sm border overflow-hidden overflow-x-auto">
             <table className="w-full text-left text-sm">
               <thead className="bg-gray-50 text-gray-600">
                 <tr>
@@ -158,7 +158,7 @@ export const ReportsPage = () => {
             <span className="text-2xl font-bold text-red-700">${totalCartera.toLocaleString()}</span>
           </div>
 
-          <div className="bg-white rounded-xl shadow-sm border overflow-hidden">
+          <div className="bg-white rounded-xl shadow-sm border overflow-hidden overflow-x-auto">
             <table className="w-full text-left text-sm">
               <thead className="bg-gray-50 text-gray-600">
                 <tr>

@@ -12,3 +12,6 @@ export const addPaymentRequest = async (data: { enrollmentId: string; amount: nu
 
 export const addGradeRequest = async (data: { enrollmentId: string; note: string; value: number }) => 
   client.post('/finances/grades', data);
+
+export const getRecentTransactionsRequest = async () => 
+  client.get('/finances/transactions');

@@ -17,7 +17,7 @@ export const ClassroomsPage = () => {
   const [editingClassroom, setEditingClassroom] = useState<Classroom | null>(null);
 
   // Hook form con 'watch' para detectar cambios en el tipo de aula
-  const { register, handleSubmit, reset, setValue, watch, formState: { errors } } = useForm<Classroom>();
+  const { register, handleSubmit, reset, watch, formState: { errors } } = useForm<Classroom>();
   const typeWatch = watch("type", "Física"); // Valor por defecto Física
 
   const loadData = async () => {

@@ -103,7 +103,7 @@ export const FinancePage = () => {
                 <Search className="absolute left-4 top-3.5 text-indigo-400" size={20} />
                 <input 
                     type="text" 
-                    className="w-full pl-12 pr-4 py-3 bg-gray-50 dark:bg-gray-700/50 border-transparent focus:bg-white dark:focus:bg-gray-700 border focus:border-indigo-500 rounded-xl outline-none transition font-medium text-gray-700 dark:text-white placeholder-gray-400 dark:placeholder-gray-500"
+                    className="w-full pl-12 pr-4 py-3 bg-gray-50 dark:bg-gray-700/50 border-transparent focus:bg-white dark:focus:bg-gray-700 border focus:border-indigo-500 rounded-xl outline-none transition font-medium text-gray-700 dark:text-indigo-600 placeholder-gray-400 dark:placeholder-gray-500"
                     placeholder="Buscar por nombre, apellido o documento..."
                     value={searchTerm}
                     onChange={(e) => setSearchTerm(e.target.value)}
@@ -123,7 +123,7 @@ export const FinancePage = () => {
                                 {s.name[0]}{s.lastName[0]}
                             </div>
                             <div>
-                                <p className="font-bold text-gray-800 dark:text-white">{s.name} {s.lastName}</p>
+                                <p className="font-bold text-gray-800 dark:text-indigo-600">{s.name} {s.lastName}</p>
                                 <p className="text-xs text-gray-500 dark:text-gray-400 font-mono">{s.documentId}</p>
                             </div>
                             <ArrowRight size={16} className="ml-auto text-gray-300 dark:text-gray-600" />

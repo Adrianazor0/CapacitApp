@@ -122,7 +122,7 @@ export const GroupDetailsPage = () => {
   const submitAttendance = async () => {
     const records = Object.entries(attendanceBuffer).map(([enrollmentId, status]) => ({ enrollmentId, status }));
     try {
-        await client.post('/finances/attendance', { groupId: id, date: new Date(), records });
+        await client.post('/academic/attendance', { groupId: id, date: new Date(), records });
         setIsAttendanceModalOpen(false);
         setAttendanceBuffer({});
         loadData();

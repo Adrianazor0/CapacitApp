@@ -34,7 +34,7 @@ export const MainLayout = () => {
         </header>
 
         {/* 3. Contenido Principal */}
-        <main className="flex-1 p-4 md:p-8 w-full overflow-x-hidden">
+        <main className="flex-1 p-4 md:w-[calc(100vw-17rem)] w-full overflow-x-hidden dark:bg-gray-800 dark:border-gray-700 ">
           <Outlet />
         </main>
       </div>

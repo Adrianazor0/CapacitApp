@@ -12,29 +12,30 @@ import { GroupDetailsPage } from './pages/GroupDetailsPage';
 import { DashboardPage } from './pages/DashboardPage';
 import { ReportsPage } from './pages/ReportsPage';
 import { FinancePage } from './pages/FinancePage';
+import { ThemeProvider } from './context/themeContext';
 
 function App() {
   return (
-    <AuthProvider>
-      <Routes>
-        <Route path="/login" element={<LoginPage />} />
-        
-        <Route element={<ProtectedRoute />}>
-          <Route element={<MainLayout />}>
-            <Route path="/programs" element={<ProgramsPage />} />
-            <Route path="/teachers" element={<TeachersPage />} />
-            <Route path="/classrooms" element={<ClassroomsPage />} />
-            <Route path="/students" element={<StudentsPage />} />
-            <Route path="/groups" element={<GroupsPage />} />
-            <Route path="/groups/:id" element={<GroupDetailsPage />} />
-            <Route path="/" element={<DashboardPage />} />
-            <Route path="/reports" element={<ReportsPage />} />
-            <Route path="/finances" element={<FinancePage />} />
+    <ThemeProvider>
+      <AuthProvider>
+        <Routes>
+          <Route path="/login" element={<LoginPage />} />
+          <Route element={<ProtectedRoute />}>
+            <Route element={<MainLayout />}>
+              <Route path="/programs" element={<ProgramsPage />} />
+              <Route path="/teachers" element={<TeachersPage />} />
+              <Route path="/classrooms" element={<ClassroomsPage />} />
+              <Route path="/students" element={<StudentsPage />} />
+              <Route path="/groups" element={<GroupsPage />} />
+              <Route path="/groups/:id" element={<GroupDetailsPage />} />
+              <Route path="/" element={<DashboardPage />} />
+              <Route path="/reports" element={<ReportsPage />} />
+              <Route path="/finances" element={<FinancePage />} />
+            </Route>
           </Route>
-        </Route>
-
-      </Routes>
-    </AuthProvider>
+        </Routes>
+      </AuthProvider>
+    </ThemeProvider>
   );
 }
 

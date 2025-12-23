@@ -83,7 +83,7 @@ export const GroupDetailsPage = () => {
     if (total >= 90) literal = 'A';
     else if (total >= 85) literal = 'B+';
     else if (total >= 80) literal = 'B';
-    else if (total >= 75) literal = 'B-'; // Según tu requerimiento
+    else if (total >= 75) literal = 'B-';
     else if (total >= 70) literal = 'C';
     else if (total >= 60) literal = 'D';
 
@@ -100,7 +100,7 @@ export const GroupDetailsPage = () => {
     try {
       await addGradeRequest({
         enrollmentId: selectedEnrollmentId,
-        note: data.note, // Enviamos el nombre exacto del examen
+        note: data.note,
         value: Number(data.value)
       });
       setIsGradeModalOpen(false);
@@ -141,31 +141,50 @@ export const GroupDetailsPage = () => {
   // Obtener el máximo de la evaluación seleccionada actualmente
   const currentMaxScore = EVALUATION_PLAN.find(e => e.name === selectedEvalType)?.max || 100;
 
-  if (loading) return <div>Cargando...</div>;
-  if (!group) return <div>Grupo no encontrado</div>;
+  if (loading) return <div className="p-8 text-center text-gray-500 dark:text-gray-400">Cargando...</div>;
+  if (!group) return <div className="p-8 text-center text-gray-500 dark:text-gray-400">Grupo no encontrado</div>;
 
   return (
-    <div>
-      <button onClick={() => navigate('/groups')} className="flex items-center gap-2 text-gray-500 hover:text-indigo-600 mb-4 transition">
+    <div className="animate-fade-in-up w-full">
+      <button 
+        onClick={() => navigate('/groups')} 
+        className="flex items-center gap-2 bg-indigo-600 text-white hover:text-indigo-600 dark:text-gray-200 dark:hover:text-indigo-400 mb-4 transition"
+      >
         <ArrowLeft size={18} /> Volver a Grupos
       </button>
 
       <div className="flex justify-between items-center mb-6">
         <div>
-          <h1 className="text-2xl font-bold text-gray-800">{group.program.name}</h1>
-          <p className="text-gray-500">Grupo: {group.code}</p>
+          <h1 className="text-2xl font-bold text-gray-800 dark:text-white">{group.program.name}</h1>
+          <p className="text-gray-500 dark:text-gray-400">Grupo: <span className="font-mono">{group.code}</span></p>
         </div>
-        <button onClick={() => setIsEnrollModalOpen(true)} className="bg-indigo-600 text-white px-4 py-2 rounded-lg text-sm font-bold">
+        <button 
+          onClick={() => setIsEnrollModalOpen(true)} 
+          className="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-lg text-sm font-bold shadow-sm transition active:scale-95"
+        >
           + Inscribir
         </button>
       </div>
 
-      <div className="flex gap-4 border-b mb-6">
-        <button onClick={() => setActiveTab('asistencia')} className={`pb-3 px-4 font-medium transition ${activeTab === 'asistencia' ? 'border-b-2 border-indigo-600 text-indigo-600' : 'text-gray-500'}`}>
-          <Users size={18} className="inline mr-2"/> Listado y Asistencia
+      {/* Tabs de Navegación */}
+      <div className="flex gap-4 border-b border-gray-200 dark:border-gray-700 mb-6">
+        <button 
+          onClick={() => setActiveTab('asistencia')} 
+          className={`pb-3 px-4 font-medium transition flex items-center gap-2 
+            ${activeTab === 'asistencia' 
+              ? 'border-b-2 border-indigo-600 bg-white text-indigo-600 dark:bg-indigo-600 dark:text-gray-200 dark:border-indigo-400' 
+              : 'text-white bg-indigo-400 dark:bg-white dark:text-indigo-400 hover:text-gray-700 dark:hover:text-gray-200'}`}
+        >
+          <Users size={18} /> Listado y Asistencia
         </button>
-        <button onClick={() => setActiveTab('notas')} className={`pb-3 px-4 font-medium transition ${activeTab === 'notas' ? 'border-b-2 border-indigo-600 text-indigo-600' : 'text-gray-500'}`}>
-          <GraduationCap size={18} className="inline mr-2"/> Calificaciones
+        <button 
+          onClick={() => setActiveTab('notas')} 
+          className={`pb-3 px-4 font-medium transition flex items-center gap-2
+            ${activeTab === 'notas' 
+              ? 'border-b-2 border-indigo-600 text-indigo-600 dark:bg-indigo-600 dark:text-gray-200 dark:border-indigo-400' 
+              : 'text-white bg-indigo-400 dark:bg-white dark:text-indigo-400 hover:text-gray-700 dark:hover:text-gray-200'}`}
+        >
+          <GraduationCap size={18} /> Calificaciones
         </button>
       </div>
 
@@ -173,46 +192,67 @@ export const GroupDetailsPage = () => {
       {activeTab === 'asistencia' && (
         <div className="animate-fade-in">
             <div className="flex justify-end mb-4">
-                <button onClick={() => setIsAttendanceModalOpen(true)} className="bg-green-600 text-white px-4 py-2 rounded-lg flex items-center gap-2 hover:bg-green-700 text-sm font-bold">
+                <button 
+                  onClick={() => setIsAttendanceModalOpen(true)} 
+                  className="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg flex items-center gap-2 text-sm font-bold shadow-sm transition active:scale-95"
+                >
                     <CheckSquare size={18} /> Pasar Lista Hoy
                 </button>
             </div>
-            <div className="bg-white rounded-xl shadow-sm border overflow-hidden">
-                <table className="w-full text-left text-sm">
-                    <thead className="bg-gray-50 text-gray-600">
-                        <tr>
-                            <th className="p-4">Estudiante</th>
-                            <th className="p-4 text-center">Asistencias</th>
-                            <th className="p-4 text-center">Faltas</th>
-                            <th className="p-4 text-center">Justificadas</th>
-                            <th className="p-4 text-center">Estado</th>
-                            <th className="p-4 text-center">Acciones</th>
-                        </tr>
-                    </thead>
-                    <tbody className="divide-y">
-                        {enrollments.map(e => {
-                            const absences = e.attendance?.filter((a: any) => a.status === 'A').length || 0;
-                            const justified = e.attendance?.filter((a: any) => a.status === 'J').length || 0;
-                            const isAtRisk = absences >= 3;
-                            return (
-                                <tr key={e._id} className={e.status === 'Retirado' ? 'bg-red-50 opacity-70' : ''}>
-                                    <td className="p-4 font-medium">{e.student.name} {e.student.lastName}</td>
-                                    <td className="p-4 text-center text-green-600 font-bold">{e.attendance?.filter((a: any) => a.status === 'P').length || 0}</td>
-                                    <td className="p-4 text-center"><span className={`px-2 py-1 rounded font-bold ${isAtRisk ? 'bg-red-100 text-red-600' : 'text-gray-600'}`}>{absences}</span></td>
-                                    <td className="p-4 text-center text-yellow-600 font-bold">{justified}</td>
-                                    <td className="p-4 text-center"><span className={`px-2 py-1 rounded-full text-xs ${e.status === 'Retirado' ? 'bg-red-200 text-red-800' : 'bg-green-100 text-green-800'}`}>{e.status}</span></td>
-                                    <td className="p-4 text-center">
-                                        {e.status !== 'Retirado' && isAtRisk && (
-                                            <button onClick={() => handleWithdrawStudent(e._id)} className="text-red-500 hover:bg-red-50 p-2 rounded text-xs font-bold" title="Retirar">
-                                                <UserMinus size={14} /> Retirar
-                                            </button>
-                                        )}
-                                    </td>
-                                </tr>
-                            );
-                        })}
-                    </tbody>
-                </table>
+            <div className="bg-white dark:bg-gray-800 dark:border-gray-700 rounded-xl shadow-sm border overflow-hidden">
+                <div className="overflow-x-auto">
+                  <table className="w-full text-left text-sm">
+                      <thead className="bg-gray-50 dark:bg-gray-700/50 text-gray-600 dark:text-gray-400 uppercase text-xs font-bold">
+                          <tr>
+                              <th className="p-4">Estudiante</th>
+                              <th className="p-4 text-center">Asistencias</th>
+                              <th className="p-4 text-center">Faltas</th>
+                              <th className="p-4 text-center">Justificadas</th>
+                              <th className="p-4 text-center">Estado</th>
+                              <th className="p-4 text-center">Acciones</th>
+                          </tr>
+                      </thead>
+                      <tbody className="divide-y divide-gray-100 dark:divide-gray-700">
+                          {enrollments.map(e => {
+                              const absences = e.attendance?.filter((a: any) => a.status === 'A').length || 0;
+                              const justified = e.attendance?.filter((a: any) => a.status === 'J').length || 0;
+                              const isAtRisk = absences >= 3;
+                              return (
+                                  <tr key={e._id} className={`hover:bg-gray-50 dark:hover:bg-gray-700/30 transition ${e.status === 'Retirado' ? 'bg-red-50 dark:bg-red-900/10 opacity-70' : ''}`}>
+                                      <td className="p-4 font-medium text-gray-800 dark:text-gray-200">{e.student.name} {e.student.lastName}</td>
+                                      <td className="p-4 text-center text-green-600 dark:text-green-400 font-bold">{e.attendance?.filter((a: any) => a.status === 'P').length || 0}</td>
+                                      <td className="p-4 text-center">
+                                        <span className={`px-2 py-1 rounded font-bold ${isAtRisk ? 'bg-red-100 text-red-600 dark:bg-red-900/30 dark:text-red-400' : 'text-gray-600 dark:text-gray-400'}`}>
+                                          {absences}
+                                        </span>
+                                      </td>
+                                      <td className="p-4 text-center text-yellow-600 dark:text-yellow-500 font-bold">{justified}</td>
+                                      <td className="p-4 text-center">
+                                        <span className={`px-2 py-1 rounded-full text-xs 
+                                          ${e.status === 'Retirado' 
+                                            ? 'bg-red-200 text-red-800 dark:bg-red-900/40 dark:text-red-300' 
+                                            : 'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400'}`}
+                                        >
+                                          {e.status}
+                                        </span>
+                                      </td>
+                                      <td className="p-4 text-center">
+                                          {e.status !== 'Retirado' && isAtRisk && (
+                                              <button 
+                                                onClick={() => handleWithdrawStudent(e._id)} 
+                                                className="text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 p-2 rounded text-xs font-bold flex items-center justify-center gap-1 mx-auto transition" 
+                                                title="Retirar"
+                                              >
+                                                  <UserMinus size={14} /> Retirar
+                                              </button>
+                                          )}
+                                      </td>
+                                  </tr>
+                              );
+                          })}
+                      </tbody>
+                  </table>
+                </div>
             </div>
         </div>
       )}
@@ -225,15 +265,21 @@ export const GroupDetailsPage = () => {
                 const isComplete = e.grades?.length === 4;
 
                 return (
-                    <div key={e._id} className="bg-white p-5 rounded-xl shadow-sm border flex flex-col h-full">
+                    <div key={e._id} className="bg-white dark:bg-gray-800 dark:border-gray-700 p-5 rounded-xl shadow-sm border flex flex-col h-full transition hover:shadow-md">
                         <div className="flex justify-between items-start mb-4">
-                            <div className="font-bold text-gray-800">{e.student.name} {e.student.lastName}</div>
+                            <div className="font-bold text-gray-800 dark:text-gray-200 text-lg">{e.student.name} {e.student.lastName}</div>
                             {isComplete ? (
-                                <div className={`px-3 py-1 rounded text-sm font-bold ${literal === 'F' || literal === 'D' ? 'bg-red-100 text-red-700' : 'bg-green-100 text-green-700'}`}>
+                                <div className={`px-3 py-1 rounded text-sm font-bold 
+                                  ${literal === 'F' || literal === 'D' 
+                                    ? 'bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400' 
+                                    : 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400'}`}
+                                >
                                     {literal} ({total})
                                 </div>
                             ) : (
-                                <span className="text-xs bg-gray-100 text-gray-500 px-2 py-1 rounded">En progreso: {total} pts</span>
+                                <span className="text-xs bg-gray-100 dark:bg-gray-700 text-gray-500 dark:text-gray-400 px-2 py-1 rounded font-medium">
+                                  En progreso: {total} pts
+                                </span>
                             )}
                         </div>
                         
@@ -241,12 +287,14 @@ export const GroupDetailsPage = () => {
                             {EVALUATION_PLAN.map(plan => {
                                 const grade = e.grades?.find((g: any) => g.note === plan.name);
                                 return (
-                                    <div key={plan.id} className="flex justify-between text-sm items-center border-b border-gray-50 last:border-0 pb-1">
-                                        <span className="text-gray-500 text-xs">{plan.name} <span className="text-gray-300">({plan.max})</span></span>
+                                    <div key={plan.id} className="flex justify-between text-sm items-center border-b border-gray-50 dark:border-gray-700 last:border-0 pb-1.5">
+                                        <span className="text-gray-500 dark:text-gray-400 text-xs">
+                                          {plan.name} <span className="text-gray-300 dark:text-gray-600">({plan.max})</span>
+                                        </span>
                                         {grade ? (
-                                            <span className="font-bold text-gray-800">{grade.value}</span>
+                                            <span className="font-bold text-gray-800 dark:text-white">{grade.value}</span>
                                         ) : (
-                                            <span className="text-xs text-gray-300 italic">-</span>
+                                            <span className="text-xs text-gray-300 dark:text-gray-600 italic">-</span>
                                         )}
                                     </div>
                                 );
@@ -256,7 +304,7 @@ export const GroupDetailsPage = () => {
                         {!isComplete && (
                             <button 
                                 onClick={() => { setSelectedEnrollmentId(e._id); setIsGradeModalOpen(true); }}
-                                className="w-full bg-indigo-50 text-indigo-600 py-2 rounded hover:bg-indigo-100 text-sm font-bold flex justify-center gap-2 transition"
+                                className="w-full bg-indigo-50 text-indigo-600 dark:bg-indigo-900/20 dark:text-indigo-400 py-2.5 rounded-lg hover:bg-indigo-100 dark:hover:bg-indigo-900/40 text-sm font-bold flex justify-center gap-2 transition"
                             >
                                 <Plus size={16} /> Calificar
                             </button>
@@ -269,35 +317,54 @@ export const GroupDetailsPage = () => {
 
       {/* Modal Asistencia */}
       <Modal isOpen={isAttendanceModalOpen} onClose={() => setIsAttendanceModalOpen(false)} title="Pasar Lista">
-        {/* ... contenido igual que antes ... */}
-        <div className="space-y-4 max-h-96 overflow-y-auto">
-            <p className="text-sm text-gray-500">Marca a los estudiantes <b>PRESENTES</b>.</p>
+        <div className="space-y-4 max-h-96 overflow-y-auto pr-1">
+            <p className="text-sm text-gray-500 dark:text-gray-400 bg-gray-50 dark:bg-gray-700/50 p-2 rounded">
+              Marca el estado de los estudiantes para hoy.
+            </p>
             {enrollments.filter(e => e.status !== 'Retirado').map(e => (
-                <div key={e._id} className="flex items-center justify-between p-2 border-b">
-                    <span>{e.student.name} {e.student.lastName}</span>
+                <div key={e._id} className="flex items-center justify-between p-2 border-b border-gray-100 dark:border-gray-700 last:border-0">
+                    <span className="text-gray-800 dark:text-gray-200 text-sm">{e.student.name} {e.student.lastName}</span>
                     <div className="flex gap-2">
-                        <button onClick={() => setAttendanceBuffer({...attendanceBuffer, [e._id]: 'P'})} className={`p-2 rounded ${attendanceBuffer[e._id] === 'P' ? 'bg-green-600 text-white' : 'bg-gray-200'}`}>P</button>
-                        <button onClick={() => setAttendanceBuffer({...attendanceBuffer, [e._id]: 'A'})} className={`p-2 rounded ${attendanceBuffer[e._id] === 'A' ? 'bg-red-600 text-white' : 'bg-gray-200'}`}>A</button>
-                        <button onClick={() => setAttendanceBuffer({...attendanceBuffer, [e._id]: 'J'})} className={`p-2 rounded ${attendanceBuffer[e._id] === 'J' ? 'bg-yellow-500 text-white' : 'bg-gray-200'}`}>J</button>
+                        <button 
+                          onClick={() => setAttendanceBuffer({...attendanceBuffer, [e._id]: 'P'})} 
+                          className={`w-8 h-8 rounded flex items-center justify-center font-bold text-xs transition
+                            ${attendanceBuffer[e._id] === 'P' 
+                              ? 'bg-green-600 text-white' 
+                              : 'bg-gray-100 dark:bg-gray-700 text-gray-500 dark:text-gray-400 hover:bg-green-100 dark:hover:bg-green-900/30'}`}
+                        >P</button>
+                        <button 
+                          onClick={() => setAttendanceBuffer({...attendanceBuffer, [e._id]: 'A'})} 
+                          className={`w-8 h-8 rounded flex items-center justify-center font-bold text-xs transition
+                            ${attendanceBuffer[e._id] === 'A' 
+                              ? 'bg-red-600 text-white' 
+                              : 'bg-gray-100 dark:bg-gray-700 text-gray-500 dark:text-gray-400 hover:bg-red-100 dark:hover:bg-red-900/30'}`}
+                        >A</button>
+                        <button 
+                          onClick={() => setAttendanceBuffer({...attendanceBuffer, [e._id]: 'J'})} 
+                          className={`w-8 h-8 rounded flex items-center justify-center font-bold text-xs transition
+                            ${attendanceBuffer[e._id] === 'J' 
+                              ? 'bg-yellow-500 text-white' 
+                              : 'bg-gray-100 dark:bg-gray-700 text-gray-500 dark:text-gray-400 hover:bg-yellow-100 dark:hover:bg-yellow-900/30'}`}
+                        >J</button>
                     </div>
                 </div>
             ))}
-            <button onClick={submitAttendance} className="w-full bg-indigo-600 text-white py-2 rounded font-bold mt-4">Guardar Asistencia</button>
+            <button onClick={submitAttendance} className="w-full bg-indigo-600 hover:bg-indigo-700 text-white py-2.5 rounded-lg font-bold mt-4 transition shadow-sm active:scale-95">Guardar Asistencia</button>
         </div>
       </Modal>
 
       {/* Modal Notas Mejorado */}
       <Modal isOpen={isGradeModalOpen} onClose={() => setIsGradeModalOpen(false)} title="Registrar Nota">
-        <form onSubmit={onAddGrade} className="space-y-4">
-            <div className="bg-yellow-50 p-3 rounded text-xs text-yellow-800 mb-2">
-                Selecciona la evaluación. El sistema validará el puntaje máximo permitido.
+        <form onSubmit={onAddGrade} className="space-y-5">
+            <div className="bg-yellow-50 dark:bg-yellow-900/20 p-3 rounded-lg text-xs text-yellow-800 dark:text-yellow-200 border border-yellow-100 dark:border-yellow-900/30">
+                Selecciona la evaluación. El sistema validará automáticamente el puntaje máximo permitido.
             </div>
             
             <div>
-                <label className="text-sm font-bold text-gray-700">Evaluación</label>
+                <label className="text-sm font-bold text-gray-700 dark:text-gray-300 mb-1 block">Evaluación</label>
                 <select 
                     {...registerGrade("note", {required:true})} 
-                    className="w-full border p-2 rounded mt-1"
+                    className="w-full border border-gray-300 dark:border-gray-600 rounded-lg p-2.5 bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-colors"
                 >
                     <option value="">Seleccionar...</option>
                     {EVALUATION_PLAN.map(plan => (
@@ -309,7 +376,7 @@ export const GroupDetailsPage = () => {
             </div>
 
             <div>
-                <label className="text-sm font-bold text-gray-700">Puntaje Obtenido</label>
+                <label className="text-sm font-bold text-gray-700 dark:text-gray-300 mb-1 block">Puntaje Obtenido</label>
                 <div className="relative">
                     <input 
                         type="number" 
@@ -319,27 +386,32 @@ export const GroupDetailsPage = () => {
                             max: { value: currentMaxScore, message: `Máximo permitido: ${currentMaxScore}` }
                         })} 
                         placeholder={`0 - ${currentMaxScore}`} 
-                        className="w-full border p-2 rounded mt-1 font-bold text-lg"
+                        className="w-full border border-gray-300 dark:border-gray-600 rounded-lg p-2.5 bg-white dark:bg-gray-700 text-gray-900 dark:text-white font-bold text-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-colors"
                     />
-                    <span className="absolute right-3 top-3 text-gray-400 text-sm">/ {currentMaxScore}</span>
+                    <span className="absolute right-3 top-3 text-gray-400 dark:text-gray-500 text-sm font-medium">/ {currentMaxScore}</span>
                 </div>
-                {/* Nota: Para ver el error visualmente se requiere conectar el objeto errors de useForm, 
-                    pero la validación HTML5 funcionará igual */}
             </div>
 
-            <button className="w-full bg-indigo-600 text-white py-3 rounded-lg font-bold hover:bg-indigo-700">
+            <button className="w-full bg-indigo-600 hover:bg-indigo-700 text-white py-3 rounded-xl font-bold transition shadow-lg shadow-indigo-500/30 active:scale-95">
                 Guardar Calificación
             </button>
         </form>
       </Modal>
 
-      <Modal isOpen={isEnrollModalOpen} onClose={() => setIsEnrollModalOpen(false)} title="Inscribir">
+      {/* Modal Enroll */}
+      <Modal isOpen={isEnrollModalOpen} onClose={() => setIsEnrollModalOpen(false)} title="Inscribir Estudiante">
          <form onSubmit={onEnroll} className="space-y-4">
-            <select {...registerEnroll("studentId", {required:true})} className="w-full border p-2 rounded">
-                <option value="">Seleccionar Estudiante...</option>
-                {availableStudents.map(s => <option key={s._id} value={s._id}>{s.name} {s.lastName}</option>)}
-            </select>
-            <button className="w-full bg-indigo-600 text-white py-2 rounded font-bold">Inscribir</button>
+            <div>
+              <label className="text-xs font-bold text-gray-500 dark:text-gray-400 mb-1 block">ESTUDIANTE DISPONIBLE</label>
+              <select 
+                {...registerEnroll("studentId", {required:true})} 
+                className="w-full border border-gray-300 dark:border-gray-600 rounded-lg p-2.5 bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-colors"
+              >
+                  <option value="">Seleccionar Estudiante...</option>
+                  {availableStudents.map(s => <option key={s._id} value={s._id}>{s.name} {s.lastName}</option>)}
+              </select>
+            </div>
+            <button className="w-full bg-indigo-600 hover:bg-indigo-700 text-white py-2.5 rounded-xl font-bold transition shadow-sm active:scale-95">Inscribir</button>
          </form>
       </Modal>
     </div>

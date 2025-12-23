@@ -47,7 +47,7 @@ export const Sidebar = ({ isOpen = true, onClose }: SidebarProps) => {
             <div className="bg-indigo-600 p-2 rounded-xl text-white shadow-lg shadow-indigo-200 dark:shadow-none">
               <GraduationCap size={24} />
             </div>
-            <span className="font-bold text-gray-800 text-lg dark:text-white tracking-tight">EduManager</span>
+            <span className="font-bold text-gray-800 text-lg dark:text-white tracking-tight">CapacitManager</span>
           </div>
           {onClose && (
             <button onClick={onClose} className="md:hidden text-gray-400 hover:text-red-500 transition">

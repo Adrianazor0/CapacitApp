@@ -122,7 +122,7 @@ export const GroupDetailsPage = () => {
   const submitAttendance = async () => {
     const records = Object.entries(attendanceBuffer).map(([enrollmentId, status]) => ({ enrollmentId, status }));
     try {
-        await client.post('/finance/attendance', { groupId: id, date: new Date(), records });
+        await client.post('/finances/attendance', { groupId: id, date: new Date(), records });
         setIsAttendanceModalOpen(false);
         setAttendanceBuffer({});
         loadData();
@@ -133,7 +133,7 @@ export const GroupDetailsPage = () => {
   const handleWithdrawStudent = async (enrollmentId: string) => {
     if(!confirm("¿Retirar estudiante por inasistencia?")) return;
     try {
-        await client.put('/finance/status', { enrollmentId, status: 'Retirado' });
+        await client.put('/finances/status', { enrollmentId, status: 'Retirado' });
         loadData();
     } catch (error) { alert("Error al retirar estudiante"); }
   };

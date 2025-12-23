@@ -3,9 +3,8 @@ import { Enrollment } from '../models/Enrollment';
 
 export const takeAttendance = async (req: Request, res: Response) => {
   try {
-    const { groupId, date, records } = req.body; // records: [{ enrollmentId, status }]
+    const { groupId, date, records } = req.body;
     
-    // Normalizamos la fecha de entrada (para comparar solo día, mes y año)
     const inputDate = new Date(date);
     inputDate.setHours(0, 0, 0, 0);
 
@@ -13,7 +12,6 @@ export const takeAttendance = async (req: Request, res: Response) => {
         const enrollment = await Enrollment.findById(record.enrollmentId);
         
         if (enrollment) {
-            // Buscamos si ya existe un registro para HOY
             const existingIndex = enrollment.attendance.findIndex(entry => {
                 const entryDate = new Date(entry.date);
                 entryDate.setHours(0, 0, 0, 0);
@@ -21,10 +19,8 @@ export const takeAttendance = async (req: Request, res: Response) => {
             });
 
             if (existingIndex >= 0) {
-                // CASO EDITAR: Si el maestro se equivocó, actualizamos el estado existente
                 enrollment.attendance[existingIndex].status = record.status;
             } else {
-                // CASO CREAR: No hay registro hoy, agregamos uno nuevo
                 enrollment.attendance.push({ 
                     date: new Date(date), 
                     status: record.status 
@@ -40,7 +36,6 @@ export const takeAttendance = async (req: Request, res: Response) => {
   }
 };
 
-// Cambiar Estado (Retirar Estudiante)
 export const updateEnrollmentStatus = async (req: Request, res: Response) => {
   try {
     const { enrollmentId, status } = req.body;
